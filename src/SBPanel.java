@@ -369,7 +369,7 @@ public class SBPanel extends JPanel implements Runnable {
 		g2d.setColor(Color.WHITE);
 		g2d.setFont(new Font("Arial", Font.BOLD, 20));
 		g2d.drawString(Integer.toString(score), 20, 40);
-		g2d.drawString(Integer.toString(ship.getHealth()), (BlasterConstants.BWIDTH - 40), 40);
+		g2d.drawString(Integer.toString(ship.getHealth()), (SBConstants.WIDTH - 40), 40);
 		
 	}
 	
