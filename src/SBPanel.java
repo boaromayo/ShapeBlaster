@@ -47,17 +47,23 @@ public class SBPanel extends JPanel implements Runnable {
 		// Set the size of the screen
 		setSize(SBConstants.BSIZE);
 		setBackground(Color.BLACK);
-		// Set the listeners
-		addMouseListener(new MouseAdapt());
-		addMouseMotionListener(new MouseAdapt());
-		addKeyListener(new KeyAdapt());
+		// Initialize input event listeners.
+		initInput();
 		// Init the game settings.
 		initGame();
 		// Set the window focusable.
 		setVisible(true);
 		setFocusable(true);
 		requestFocusInWindow();
-		
+	}
+	
+	//========================================
+	// initInput() - Initialize input event listeners.
+	//========================================
+	public void initInput() {
+		addMouseListener(new MouseAdapt());
+		addMouseMotionListener(new MouseAdapt());
+		addKeyListener(new KeyAdapt());
 	}
 	
 	//========================================
