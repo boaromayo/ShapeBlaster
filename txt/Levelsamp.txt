@@ -1,0 +1,84 @@
+public class Level {
+
+	private int level;
+	protected ShapeParticle[][] shapeArray;
+	private int row, col;
+	
+	public Level() {
+		level = 0;
+		
+		readLevels();
+	}
+	
+	public Level(int newLevel) {
+		level = newLevel;
+		
+		readLevels();
+		
+	}
+	
+	private void readLevels() {
+		
+		switch(level){
+		case 0:
+			row = col = 9;
+			break;
+		case 1:
+			row = 6;
+			col = 13;
+			break;
+		case 2:
+			row = col = 8;
+			break;
+		}
+		
+		shapeArray = new ShapeParticle[row][col];
+	}
+	
+	public ShapeParticle[][] loadParticles(int level) {
+		switch (level){
+		case 0:
+			for (int yrow = 0; yrow < shapeArray.length; yrow++) {
+				for (int xcol = 0; xcol < shapeArray[yrow].length; xcol++) {
+					if (yrow == 0)
+						shapeArray[yrow][xcol] = new SquareParticle(220 + (xcol * 20), 80 + (yrow * 20));
+					else
+						shapeArray[yrow][xcol] = new CircleParticle(220 + (xcol * 20), 80 + (yrow * 20));
+					
+				}
+			}
+			return shapeArray;
+		case 1:
+			for (int yrow = 0; yrow < 1; yrow++) 
+				for (int xcol = 0; xcol < shapeArray[yrow].length; xcol++) 
+					shapeArray[yrow][xcol] = new SquareParticle(180 + (xcol * 20), 80 + (yrow * 20));	
+				
+			for (int yrow = 1; yrow < shapeArray.length; yrow++) 
+				for (int xcol = 0; xcol < shapeArray[yrow].length; xcol++) 
+					shapeArray[yrow][xcol] = new CircleParticle(180 + (xcol * 20), 80 + (yrow * 20));
+				
+			return shapeArray;
+		case 2:
+			for (int yrow = 0; yrow < 4; yrow++) 
+				for (int xcol = 0; xcol < shapeArray[yrow].length; xcol++) 
+					shapeArray[yrow][xcol] = new TriParticle(200 + (xcol * 20), 80 + (yrow * 20));
+				
+			for (int yrow = 4; yrow < shapeArray.length; yrow++) 
+				for (int xcol = 0; xcol < shapeArray[yrow].length; xcol++) 
+					shapeArray[yrow][xcol] = new CircleParticle(200 + (xcol * 20), 80 + (yrow * 20));
+				
+			return shapeArray;
+		default:
+			return null;
+		}
+		
+	}
+	
+	public int getLevel() {
+		return level;
+	}
+	public ShapeParticle[][] getShapeArray() {
+		return shapeArray;
+	}
+	
+}
