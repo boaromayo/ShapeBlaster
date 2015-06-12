@@ -115,6 +115,8 @@ public class SBPanel extends JPanel implements Runnable {
 				
 				waitTime = (targetTime - diffTime) / 1000;
 				
+				if (waitTime < 0) waitTime = SBConstants.EM_WAIT;
+				
 				Thread.sleep(waitTime);
 			}
 		} catch (Exception mainerr) {
