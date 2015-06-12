@@ -1,9 +1,3 @@
-/**====================================
-/* ShapeBlaster!
-/* ------------------------------------
-/* code by Nico Poblete
-/* Copyright (c) 2012, 2015 Nico Poblete
-/**====================================**/
 package ShapeBlaster;
 import java.applet.*;
 
@@ -14,11 +8,14 @@ import javax.swing.*;
 
 import java.util.*;
 
-public class BlasterFrame extends Applet implements Runnable {
+public class SBPanel extends JPanel implements Runnable {
 	
 	// VARIABLES - DOUBLE BUFFERING.
 	private Image dbi;
 	private Graphics dbg;
+	
+	// FRAME COUNT VARIABLES.
+	private static final int FPS = 60;
 	
 	// INTERNAL GAME VARIABLES.
 	private boolean gameMode = false, pauseMode = false, finishMode = false;
@@ -42,92 +39,48 @@ public class BlasterFrame extends Applet implements Runnable {
 	protected Level level;
 	private int score;
 	
-	//----------------------------------------------------
-	// main(String[] args) - main method for application.
-	//----------------------------------------------------
-	public static void main(String[] args) {
-		JFrame frame = new JFrame(); // Call the JFrame object
-		BlasterFrame app = new BlasterFrame(); // Call main applet object
-				
-		frame.setTitle("ShapeBlaster");
-		frame.add(app);
-		
-		app.init();
-		app.start();
-		
-		// FRAME SETTINGS.
-		frame.setSize(BlasterConstants.BSIZE);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		frame.setResizable(false);
-	}
-	
-	//-----------------------------------------------
-	// init() - Initializes the game applet.
-	//-----------------------------------------------
-	public void init() {
+	/**===============================================
+	/* CONSTRUCTOR.
+	/*===============================================**/
+	public SBPanel() {
 		// Set the size of the screen
-		setSize(BlasterConstants.BSIZE);
+		setSize(SBConstants.BSIZE);
 		setBackground(Color.BLACK);
 		// Set the listeners
 		addMouseListener(new MouseAdapt());
 		addMouseMotionListener(new MouseAdapt());
-		addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent kpe) {
-				if (gameMode) {
-					ship.keyPressed(kpe);
-				
-					switch(kpe.getKeyCode()) {
-						case KeyEvent.VK_P:
-						case KeyEvent.VK_PAUSE:
-							gameMode = false;
-							pauseMode = true;
-							break;
-						case KeyEvent.VK_ESCAPE:
-							System.exit(0);
-							break;
-					}
-				} else if (pauseMode) {
-					switch(kpe.getKeyCode()) {
-						case KeyEvent.VK_P:
-						case KeyEvent.VK_PAUSE:
-							gameMode = true;
-							pauseMode = false;
-							break;
-					}
-				}
-			}
-			@Override
-			public void keyReleased(KeyEvent kre) {
-				ship.keyReleased(kre);
-			}
-		});
-		
-		level = new Level();
-		levelrect = new Rectangle[ARRAYMAX];
-		
-		start = new Rectangle(200, 140, 48, 48);
-		quit = new Rectangle(380, 140, 48, 48);
-		cont = new Rectangle(280, 380, 48, 48);
-		back = new Rectangle(280, 380, 48, 48);
-		
-		for (int i = 0; i < ARRAYMAX; i++) {
-			levelrect[i] = new Rectangle(110 + (i * 90), 100, 48, 48);
-		}
-		
+		addKeyListener(new KeyAdapt());
+		// Init the game settings.
+		initGame();
+		// Set the window focusable.
 		setVisible(true);
 		setFocusable(true);
 		requestFocusInWindow();
 		
 	}
 	
+	//========================================
+	// initGame() - Initialize game settings.
+	//========================================
+	public void initGame() {
+		// Init the level settings.
+		level = new Level();
+		levelrect = new Rectangle[ARRAYMAX];
+		// Create Rectangle buttons.
+		start = new Rectangle(200, 140, 48, 48);
+		quit = new Rectangle(380, 140, 48, 48);
+		cont = new Rectangle(280, 380, 48, 48);
+		back = new Rectangle(280, 380, 48, 48);
+		// Create level access buttons.
+		for (int i = 0; i < ARRAYMAX; i++) {
+			levelrect[i] = new Rectangle(110 + (i * 90), 100, 48, 48);
+		}
+	}
+	
 	//-----------------------------------------
 	// start() - start method for the applet.
 	//-----------------------------------------
 	public void start() {
-		
 		Thread t = new Thread(this);
 		t.start();
 	}
@@ -143,14 +96,27 @@ public class BlasterFrame extends Applet implements Runnable {
 	public void run() {
 		try {
 			while(true) {
+				int frames = getFrameCount();
 				updateGame();
 				repaint();
-				Thread.sleep(42);
+				Thread.sleep(frames);
 			}
 		} catch (Exception mainerr) {
+			System.out.println("ERROR: "+mainerr);
 			mainerr.printStackTrace();
 			System.exit(0);
 		}
+	}
+	
+	//===========================================
+	// getFrameCount() - Calculate frame count.
+	//===========================================
+	private void getFrameCount() {
+		long start, diff;
+		long total;
+		
+		start = System.currentTimeInMillis();
+		
 	}
 	
 	//===========================================
@@ -408,6 +374,38 @@ public class BlasterFrame extends Applet implements Runnable {
 		return score;
 	}
 	
+	private class KeyAdapt extends KeyAdapter {
+		@Override
+		public void keyPressed(KeyEvent kpe) {
+			if (gameMode) {
+				ship.keyPressed(kpe);
+				
+				switch(kpe.getKeyCode()) {
+					case KeyEvent.VK_P:
+					case KeyEvent.VK_PAUSE:
+						gameMode = false;
+						pauseMode = true;
+						break;
+					case KeyEvent.VK_ESCAPE:
+						System.exit(0);
+						break;
+				}
+			} else if (pauseMode) {
+				switch(kpe.getKeyCode()) {
+					case KeyEvent.VK_P:
+					case KeyEvent.VK_PAUSE:
+						gameMode = true;
+						pauseMode = false;
+						break;
+				}
+			}
+		}
+		@Override
+		public void keyReleased(KeyEvent kre) {
+			ship.keyReleased(kre);
+		}
+	}	
+	
 	private class MouseAdapt extends MouseAdapter {
 		@Override
 		public void mouseMoved(MouseEvent mm) {
@@ -468,6 +466,7 @@ public class BlasterFrame extends Applet implements Runnable {
 					mouseY < quit.y + quit.height)
 				System.exit(0);
 		}
+		// For the continue button.
 		private boolean isContinueHover() {
 			if (mouseX > cont.x && mouseX < cont.x + cont.width && mouseY > cont.y 
 					&& mouseY < cont.y + cont.height)
@@ -482,6 +481,7 @@ public class BlasterFrame extends Applet implements Runnable {
 					&& mouseY < cont.y + cont.height)
 				finishMode = false;
 		}
+		// For the back button.
 		private boolean isBackHover() {
 			if (mouseX > back.x && mouseX < back.x + back.width && mouseY > back.y 
 					&& mouseY < back.y + back.height)
@@ -498,6 +498,7 @@ public class BlasterFrame extends Applet implements Runnable {
 					prepMode = false;
 			}
 		}
+		// For each level access button.
 		private boolean isLevelHover(int i) {
 			if (mouseX > levelrect[i].x && mouseX < levelrect[i].x + levelrect[i].width &&
 					mouseY > levelrect[i].y && mouseY < levelrect[i].y + levelrect[i].height)
