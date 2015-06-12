@@ -15,7 +15,8 @@ public class SBPanel extends JPanel implements Runnable {
 	private Graphics dbg;
 	
 	// FRAME COUNT VARIABLES.
-	private static final int FPS = 60;
+	private final int FPS = 60;
+	private int targetTime = 1000 / FPS;
 	
 	// INTERNAL GAME VARIABLES.
 	private boolean gameMode = false, pauseMode = false, finishMode = false;
@@ -95,21 +96,20 @@ public class SBPanel extends JPanel implements Runnable {
 	
 	public void run() {
 		try {
+			long startTime, diffTime;
+			long waitTime;
+			
 			while(true) {
-				long start, diff, curr;
-				int frames;
-				
-				start = System.currentTimeInMillis();
+				startTime = System.currentTimeInMillis();
 				
 				updateGame();
 				repaint();
 				
-				diff = System.currentTimeInMillis() - start;
+				diffTime = System.currentTimeInMillis() - startTime;
 				
-				curr = diff / 1000;
+				waitTime = (targetTime - diffTime) / 1000;
 				
-				frames = (int)curr;
-				Thread.sleep(frames);
+				Thread.sleep(waitTime);
 			}
 		} catch (Exception mainerr) {
 			System.out.println("ERROR: "+mainerr);
