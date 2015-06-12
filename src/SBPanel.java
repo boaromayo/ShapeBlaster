@@ -96,9 +96,19 @@ public class SBPanel extends JPanel implements Runnable {
 	public void run() {
 		try {
 			while(true) {
-				int frames = getFrameCount();
+				long start, diff, curr;
+				int frames;
+				
+				start = System.currentTimeInMillis();
+				
 				updateGame();
 				repaint();
+				
+				diff = System.currentTimeInMillis() - start;
+				
+				curr = diff / 1000;
+				
+				frames = (int)curr;
 				Thread.sleep(frames);
 			}
 		} catch (Exception mainerr) {
@@ -106,17 +116,6 @@ public class SBPanel extends JPanel implements Runnable {
 			mainerr.printStackTrace();
 			System.exit(0);
 		}
-	}
-	
-	//===========================================
-	// getFrameCount() - Calculate frame count.
-	//===========================================
-	private void getFrameCount() {
-		long start, diff;
-		long total;
-		
-		start = System.currentTimeInMillis();
-		
 	}
 	
 	//===========================================
